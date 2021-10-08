@@ -56,5 +56,3 @@ def build_max_heap(arr: List[int]):
   
   return arr
 
-
-print(build_max_heap([1, 2, 3, 4, 5, 6]))
