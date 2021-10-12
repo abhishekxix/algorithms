@@ -28,7 +28,7 @@ def quickselect(a, p, r, i):
   k = q - p + 1
 
   if k == i:
-    return a[k]
+    return a[q]
 
   if i < k:
     return quickselect(a, p, q - 1, i)
