@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 
-struct ListNode
-{
+struct ListNode {
   int val;
   ListNode *next;
   ListNode() : val(0), next(nullptr) {}
@@ -9,37 +8,30 @@ struct ListNode
   ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
-class Solution
-{
-public:
-  ListNode *removeNthFromEnd(ListNode *head, int n)
-  {
+class Solution {
+ public:
+  ListNode *removeNthFromEnd(ListNode *head, int n) {
     ListNode *fast;
     ListNode *temp;
     fast = head;
     int k = 0;
 
-    while (fast != nullptr)
-    {
+    while (fast != nullptr) {
       k += 1;
       fast = fast->next;
     }
     int j = k - n;
     int f = 1;
     fast = head;
-    while (fast != nullptr)
-    {
-      if (f == j)
-      {
+    while (fast != nullptr) {
+      if (f == j) {
         temp = fast->next;
 
         fast->next = temp->next;
         delete temp;
 
         return head;
-      }
-      else
-      {
+      } else {
         fast = fast->next;
         f += 1;
       }
@@ -49,12 +41,10 @@ public:
   }
 };
 
-int main()
-{
+int main() {
   ListNode *head = new ListNode(1);
   ListNode *temp = head;
-  for (int i = 2; i <= 5; i++)
-  {
+  for (int i = 2; i <= 5; i++) {
     temp->next = new ListNode(i);
     temp = temp->next;
   }
