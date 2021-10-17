@@ -1,8 +1,3 @@
-
-from operator import truediv
-from os import replace
-
-
 class BSTNode:
   def __init__(self, key=0, left=None, right=None, parent=None) -> None:
     self.key = key
@@ -107,7 +102,6 @@ class BinarySearchTree:
   def __delete_node__(self, node: BSTNode):
     if node.right == None:
       self.__replace__(node, node.left)
-      return
 
     else:
       nxt = self.next(node)
