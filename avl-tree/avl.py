@@ -192,9 +192,15 @@ class avl_tree:
 
   def delete(self, target: node):
     if target.left == None:
+      p = target.parent
       self.replace(target, target.right)
+      if p != None:
+        p.height = self.calc_height(p)
     elif target.right == None:
+      p = target.parent
       self.replace(target, target.left)
+      if p != None:
+        p.height = self.calc_height(p)
     else:
       replacement = self.min(target.right)
       if replacement != target.right:
