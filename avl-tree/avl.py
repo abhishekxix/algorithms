@@ -1,3 +1,6 @@
+import math
+
+
 class node:
   def __init__(self, k=0, p=None, l=None, r=None) -> None:
     self.key = k
@@ -162,6 +165,23 @@ class avl_tree:
 
 
 tree = avl_tree()
-for i in range(10):
+for i in range(10**6):
   tree.insert(i)
-print('done')
+print(f'height: {tree.root.height}')
+
+
+def inorder_tree_walk(root: node):
+  if root == None:
+    return
+
+  inorder_tree_walk(root.left)
+  print(root.key)
+  inorder_tree_walk(root.right)
+
+
+# inorder_tree_walk(tree.root)
+print(
+    'possible min height',
+    math.floor(math.log2(10**6)),
+    'tree height', tree.root.height
+)
