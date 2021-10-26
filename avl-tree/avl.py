@@ -1,4 +1,6 @@
 import math
+import random
+from typing import List
 
 
 class node:
@@ -10,15 +12,25 @@ class node:
     self.height = 0
 
 
+def inorder_tree_walk(root: node, walk: List[int]):
+  if root == None:
+    return
+
+  inorder_tree_walk(root.left, walk)
+  walk.append(root.key)
+  inorder_tree_walk(root.right, walk)
+
+
 class avl_tree:
   def __init__(self, root_key=0) -> None:
     self.root = node(root_key)
+    self.size = 1
 
   def search(self, x: node, key: int):
     p = x.parent
     tmp = x
 
-    while tmp != None and tmp.key != None:
+    while tmp != None and tmp.key != key:
       p = tmp
       if key < tmp.key:
         tmp = tmp.left
@@ -34,6 +46,7 @@ class avl_tree:
     if potential_parent.key == key:
       return
 
+    self.size += 1
     new_node = node(key, potential_parent)
     new_node.height = 0
     if new_node.key < potential_parent.key:
@@ -163,25 +176,70 @@ class avl_tree:
 
     b.height = self.calc_height(b)
 
+  def replace(self, target: node, replacement: node):
+    p = target.parent
+
+    if p == None:
+      self.root = replacement
+    else:
+      if p.right == target:
+        p.right = replacement
+      else:
+        p.left = replacement
+
+    if replacement != None:
+      replacement.parent = p
+
+  def delete(self, target: node):
+    if target.left == None:
+      self.replace(target, target.right)
+    elif target.right == None:
+      self.replace(target, target.left)
+    else:
+      replacement = self.min(target.right)
+      if replacement != target.right:
+        rp = replacement.parent
+        self.replace(replacement, replacement.right)
+
+        if replacement.right == None:
+          self.balance(rp)
+        else:
+          self.balance(replacement.right)
+
+        replacement.right = target.right
+        replacement.right.parent = replacement
+
+      self.replace(target, replacement)
+      replacement.left = target.left
+      replacement.left.parent = replacement
+      self.balance(replacement)
+
+    self.size -= 1
+
 
 tree = avl_tree()
-for i in range(10**6):
+for i in range(1, 101):
   tree.insert(i)
+
 print(f'height: {tree.root.height}')
 
+for i in range(1, 20):
+  k = random.randint(1, 100)
+  target = tree.search(tree.root, k)
+  if target.key == k:
+    tree.delete(target)
 
-def inorder_tree_walk(root: node):
-  if root == None:
-    return
+walk = []
+inorder_tree_walk(tree.root, walk)
+if len(walk) == tree.size:
+  print('ok')
+else:
+  print('something is wrong')
 
-  inorder_tree_walk(root.left)
-  print(root.key)
-  inorder_tree_walk(root.right)
 
-
-# inorder_tree_walk(tree.root)
+""" # inorder_tree_walk(tree.root)
 print(
     'possible min height',
     math.floor(math.log2(10**6)),
     'tree height', tree.root.height
-)
+) """
