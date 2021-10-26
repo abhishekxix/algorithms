@@ -2,19 +2,15 @@ from typing import List
 
 
 class Solution:
-    def maxSubArray(self, nums: List[int]) -> int:
-        curr_sum = 0
-        sum_so_far = nums[0]
+  def maxSubArray(self, nums: List[int]) -> int:
+    currSum = 0
+    maxSoFar = nums[0]
 
-        n = len(nums)
+    for number in nums:
+      currSum += number
+      if currSum > maxSoFar:
+        maxSoFar = currSum
+      if currSum < 0:
+        currSum = 0
 
-        for i in range(n):
-            curr_sum += nums[i]
-
-            if curr_sum > sum_so_far:
-                sum_so_far = curr_sum
-
-            if curr_sum < 0:
-                curr_sum = 0
-
-        return sum_so_far
+    return maxSoFar
