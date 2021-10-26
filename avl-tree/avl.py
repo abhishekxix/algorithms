@@ -223,12 +223,14 @@ for i in range(1, 101):
 
 print(f'height: {tree.root.height}')
 
-for i in range(1, 20):
-  k = random.randint(1, 100)
-  target = tree.search(tree.root, k)
-  if target.key == k:
-    tree.delete(target)
+# for i in range(1, 20):
+#   k = random.randint(1, 100)
+#   target = tree.search(tree.root, k)
+#   if target.key == k:
+#     tree.delete(target)
 
+for i in range(101):
+  tree.delete(tree.root)
 walk = []
 inorder_tree_walk(tree.root, walk)
 if len(walk) == tree.size:
