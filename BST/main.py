@@ -123,8 +123,24 @@ def inorder_tree_walk(root: node):
     return
 
   inorder_tree_walk(root.left)
-  print(root.key)
+  print(root.key, end=' ')
   inorder_tree_walk(root.right)
 
 
+def dfs(root):
+  stack = []
+  curr = root
+
+  while curr or len(stack):
+    while curr:
+      stack.append(curr)
+      curr = curr.left
+
+    curr = stack.pop()
+    print(curr.key, end=' ')
+    curr = curr.right
+
+
 inorder_tree_walk(tree.root)
+print('\n==================================================')
+dfs(tree.root)
