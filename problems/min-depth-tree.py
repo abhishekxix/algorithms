@@ -1,3 +1,4 @@
+import queue
 from typing import Optional
 
 
@@ -33,3 +34,30 @@ class Solution:
 
     return explore_depth(root)
  """
+
+
+# bfs solution
+class Solution:
+  def minDepth(self, root: Optional[TreeNode]) -> int:
+    if not root:
+      return 0
+    q = [root]
+    depth = 0
+
+    while len(q):
+      cnt = len(q)
+      depth += 1
+      while cnt:
+        curr = q.pop(0)
+
+        if not curr.left and not curr.right:
+          return depth
+
+        if curr.left:
+          q.append(curr.left)
+        if curr.right:
+          q.append(curr.right)
+
+        cnt -= 1
+
+    return depth
