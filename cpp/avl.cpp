@@ -23,7 +23,6 @@ class Node {
   Node* getLeft() { return left; }
   Node* getRight() { return right; }
   Node* getParent() { return parent; }
-  int getBalance() { return left->height - right->height; }
 
   void setData(int newData) { data = newData; }
   void setHeight(int newHeight) { height = newHeight; }
@@ -65,6 +64,9 @@ class AVL {
            1;
   }
 
+  int getBalance(Node* target) {
+    return getNodeHeight(target->getLeft()) - getNodeHeight(target->getRight());
+  }
   void rotateLeft(Node* pivot) {
     Node* pParent = pivot->getParent();    //! can be null
     Node* pRight = pivot->getRight();      //  can't be null
@@ -111,6 +113,32 @@ class AVL {
     pLeft->setHeight(calculateHeight(pLeft));
   }
 
+  void fixBalance(Node* target) {
+    Node* curr = target;
+
+    while (curr) {
+      Node* parent = curr->getParent();
+      if (getBalance(curr) > 1) {  // left heavy
+        Node* left = curr->getLeft();
+
+        if (getBalance(left) < 0) {
+          // lr imbalance
+          rotateLeft(left);
+        }
+        rotateRight(curr);
+      } else if (getBalance(curr) < -1) {  // right heavy
+        Node* right = curr->getRight();
+
+        if (getBalance(right) > 0) {
+          // rl imbalance
+          rotateRight(right);
+        }
+        rotateLeft(curr);
+      }
+      curr = parent;
+    }
+  }
+
  public:
   AVL(int data) : root{new Node(data)} {}
   AVL() : root{nullptr} {}
@@ -134,19 +162,50 @@ class AVL {
     }
   }
 
+  Node* getRoot() { return root; }
+  size_t getSize() { return size; }
   Node* insert(int value) {
     Node* newNode = new Node(value);
+    size++;
 
     if (!root) {
       root = newNode;
-      return;
+      return root;
     }
 
     Node* potentialParent = getPotentialParent(value);
 
     // do not insert duplicate values
     if (potentialParent->getData() == value) return potentialParent;
+
+    if (value > potentialParent->getData())
+      potentialParent->setRight(newNode);
+    else
+      potentialParent->setLeft(newNode);
+
+    newNode->setParent(potentialParent);
+
+    fixBalance(newNode);
+
+    return newNode;
+  }
+
+  void inOrderTraversal(Node* curr) {
+    if (!curr) return;
+
+    inOrderTraversal(curr->getLeft());
+    std::cout << curr->getData() << " ";
+    inOrderTraversal(curr->getRight());
   }
 };
 
-int main() { return 0; }
+int main() {
+  AVL avl;
+
+  for (int i = -3; i < 3; i++) {
+    avl.insert(i);
+  }
+
+  avl.inOrderTraversal(avl.getRoot());
+  return 0;
+}
