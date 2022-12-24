@@ -69,7 +69,7 @@ class BST {
       Node* rRight = replacement->getRight();
 
       // getting replacement out of place
-      if (/* rRight and  */ rParent != original) {
+      if (rParent != original) {
         if (rRight) rRight->setParent(rParent);
 
         if (rParent->getLeft() == replacement)
@@ -77,23 +77,18 @@ class BST {
         else
           rParent->setRight(rRight);
 
+        // assign right child to replacement
         replacement->setRight(oRight);
         if (oRight) oRight->setParent(replacement);
       }
 
-      // assigning left child to replacement
+      // assign left child to replacement
       if (replacement != oLeft) {
         replacement->setLeft(oLeft);
         if (oLeft) oLeft->setParent(replacement);
       }
 
-      // assigning right child to replacement
-      // if (rParent != original) {
-      //   replacement->setRight(oRight);
-      //   if (oRight) oRight->setParent(replacement);
-      // }
-
-      // assigning parent to replacement
+      // assign parent to replacement
       replacement->setParent(oParent);
     }
   }
