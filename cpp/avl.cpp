@@ -78,6 +78,8 @@ class AVL {
         pParent->setLeft(pRight);
       else
         pParent->setRight(pRight);
+    } else {
+      root = pRight;
     }
 
     pRight->setLeft(pivot);
@@ -139,9 +141,16 @@ class AVL {
     }
   }
 
+  void fixHeight(Node* target) {
+    if (!target) return;
+
+    target->setHeight(calculateHeight(target));
+    fixHeight(target->getParent());
+  }
+
  public:
-  AVL(int data) : root{new Node(data)} {}
-  AVL() : root{nullptr} {}
+  AVL(int data) : root{new Node(data)}, size{0} {}
+  AVL() : root{nullptr}, size{0} {}
   ~AVL() {
     Node* curr = root;
     std::stack<Node*> toDelete;
@@ -185,6 +194,7 @@ class AVL {
 
     newNode->setParent(potentialParent);
 
+    fixHeight(newNode);
     fixBalance(newNode);
 
     return newNode;
@@ -202,10 +212,11 @@ class AVL {
 int main() {
   AVL avl;
 
-  for (int i = -3; i < 3; i++) {
+  for (int i = 0; i < 5; i++) {
     avl.insert(i);
   }
 
   avl.inOrderTraversal(avl.getRoot());
+  std::cout << std::endl;
   return 0;
 }
