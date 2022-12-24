@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 #include <vector>
 
 class Node {
@@ -102,6 +103,24 @@ class BST {
  public:
   BST(int data) : root{new Node(data)}, size{0} {}
   BST() : root{nullptr}, size{0} {}
+  ~BST() {
+    Node* curr = root;
+    std::stack<Node*> toDelete;
+
+    while (true) {
+      while (curr) {
+        toDelete.push(curr);
+
+        curr = curr->getLeft();
+      }
+      if (toDelete.empty()) break;
+      Node* tmp = toDelete.top();
+      toDelete.pop();
+      curr = tmp->getRight();
+      delete tmp;
+      size--;
+    }
+  }
 
   Node* getRoot() { return root; }
   void setRoot(Node* newRoot) { root = newRoot; }
@@ -189,9 +208,9 @@ int main() {
   // bst.remove(8);
   // bst.remove(3);
 
-  while (bst.getSize()) {
-    bst.remove(bst.getRoot()->getData());
-  }
+  // while (bst.getSize()) {
+  //   bst.remove(bst.getRoot()->getData());
+  // }
   bst.inorderTraversal(bst.getRoot());
 
   return 0;
