@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include <stack>
 
@@ -148,6 +149,57 @@ class AVL {
     fixHeight(target->getParent());
   }
 
+  Node* getSmallestDescendant(Node* curr) {
+    if (!curr->getLeft()) return curr;
+
+    return getSmallestDescendant(curr->getLeft());
+  }
+
+  void fixHeightAndBalance(Node* target) {
+    fixHeight(target);
+    fixBalance(target);
+  }
+
+  void replaceNode(Node* target, Node* replacement) {
+    Node* tParent = target->getParent();
+    Node* tLeft = target->getLeft();
+    Node* tRight = target->getRight();
+
+    if (tParent) {
+      if (tParent->getLeft() == target)
+        tParent->setLeft(replacement);
+      else
+        tParent->setRight(replacement);
+    } else {
+      root = replacement;
+    }
+
+    if (replacement) {
+      Node* rParent = replacement->getParent();
+      Node* rRight = replacement->getRight();
+      replacement->setParent(tParent);
+
+      if (rParent != target) {
+        if (rRight) rRight->setParent(rParent);
+        rParent->setLeft(rRight);
+
+        fixHeight(rParent);
+
+        replacement->setRight(tRight);
+        tRight->setParent(replacement);
+      }
+
+      if (replacement != tLeft) {
+        replacement->setLeft(tLeft);
+        if (tLeft) tLeft->setParent(replacement);
+
+        fixHeight(replacement);
+      }
+    }
+
+    fixHeightAndBalance(tParent);
+  }
+
  public:
   AVL(int data) : root{new Node(data)}, size{0} {}
   AVL() : root{nullptr}, size{0} {}
@@ -173,6 +225,16 @@ class AVL {
 
   Node* getRoot() { return root; }
   size_t getSize() { return size; }
+
+  Node* find(Node* curr, int data) {
+    if (!curr) return nullptr;
+
+    if (data == curr->getData()) return curr;
+    if (data > curr->getData()) return find(curr->getRight(), data);
+
+    return find(curr->getLeft(), data);
+  }
+
   Node* insert(int value) {
     Node* newNode = new Node(value);
     size++;
@@ -194,10 +256,28 @@ class AVL {
 
     newNode->setParent(potentialParent);
 
-    fixHeight(newNode);
-    fixBalance(newNode);
-
+    fixHeightAndBalance(newNode);
     return newNode;
+  }
+
+  void remove(int data) {
+    if (!root) return;
+
+    std::cout << size << "\n";
+    // std::cout << "deleting " << data << "\n";
+
+    Node* toDelete = find(root, data);
+
+    if (!toDelete) return;
+
+    size--;
+
+    if (toDelete->getRight())
+      replaceNode(toDelete, getSmallestDescendant(toDelete->getRight()));
+    else
+      replaceNode(toDelete, toDelete->getLeft());
+
+    delete toDelete;
   }
 
   void inOrderTraversal(Node* curr) {
@@ -212,11 +292,15 @@ class AVL {
 int main() {
   AVL avl;
 
-  for (int i = 0; i < 5; i++) {
+  for (int i = 1; i < 20; i++) {
     avl.insert(i);
   }
 
-  avl.inOrderTraversal(avl.getRoot());
+  while (avl.getRoot()) {
+    avl.remove(avl.getRoot()->getData());
+  }
+
+  // avl.inOrderTraversal(avl.getRoot());
   std::cout << std::endl;
   return 0;
 }
